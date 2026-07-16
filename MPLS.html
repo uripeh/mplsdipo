@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-gray-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dashboard Portal MPLS 2026 - SMP Diponegoro Sampang</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Poppins & Bubblegum Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            green: '#0D5C3A',
+                            lightgreen: '#1E8E5A',
+                            gold: '#D4AF37',
+                            lightgold: '#F4E07B',
+                            dark: '#0B0F17',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        fun: ['Bubblegum Sans', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0D5C3A;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1E8E5A;
+        }
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.02); }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 3s ease-in-out infinite;
+        }
+        .dashboard-tab-content {
+            display: none;
+        }
+        .dashboard-tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="h-full font-sans text-gray-800 antialiased selection:bg-brand-green selection:text-white flex overflow-hidden">
+
+    <!-- Sidebar Navigation -->
+    <aside class="hidden lg:flex lg:flex-col lg:w-72 bg-brand-dark text-white border-r border-gray-800 flex-shrink-0">
+        <!-- School Profile Badge -->
+        <div class="p-6 border-b border-gray-800/80 flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-tr from-brand-green to-brand-lightgreen rounded-xl flex items-center justify-center text-white shadow-lg">
+                <i class="fa-solid fa-graduation-cap text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-sm tracking-wide text-white">SMP DIPONEGORO</h1>
+                <p class="text-[10px] text-brand-gold tracking-widest uppercase font-semibold">PORTAL MPLS 2026</p>
+            </div>
+        </div>
+
+        <!-- Navigation Menus (Desktop) -->
+        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+            <button onclick="switchTab('overview')" id="nav-overview" class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all bg-brand-green text-white">
+                <i class="fa-solid fa-chart-pie text-base"></i>
+                <span>Dashboard Beranda</span>
+            </button>
+            <button onclick="switchTab('twibbon')" id="nav-twibbon" class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-gray-400 hover:text-white hover:bg-gray-800/50">
+                <i class="fa-solid fa-camera text-base"></i>
+                <span>Twibbon Generator</span>
+            </button>
+            <button onclick="switchTab('quiz')" id="nav-quiz" class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-gray-400 hover:text-white hover:bg-gray-800/50">
+                <i class="fa-solid fa-gamepad text-base"></i>
+                <span>Kuis "Kenal Sekolah"</span>
+            </button>
+            <button onclick="switchTab('wall')" id="nav-wall" class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-gray-400 hover:text-white hover:bg-gray-800/50">
+                <i class="fa-solid fa-thumbtack text-base"></i>
+                <span>Dinding Harapan</span>
+            </button>
+        </nav>
+
+        <!-- Current Student Bio Card -->
+        <div class="p-4 border-t border-gray-800 bg-black/20 m-4 rounded-2xl">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-brand-gold/20 flex items-center justify-center text-brand-gold">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div>
+                    <span class="block text-xs text-gray-400">Status Akun</span>
+                    <span class="block text-xs font-bold text-white">Calon Siswa Baru</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Right Screen Workspace -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-gray-50">
+        
+        <!-- Header Panel with Mobile Hamburger & Welcome Stats -->
+        <header class="bg-white border-b border-gray-200 h-16 md:h-20 flex items-center justify-between px-4 sm:px-6 lg:px-8 flex-shrink-0 z-20">
+            <div class="flex items-center gap-4">
+                <!-- Hamburger (Only shown on Mobile) -->
+                <button id="mobile-menu-open-btn" class="lg:hidden text-gray-600 hover:text-brand-green p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <div>
+                    <h2 class="text-base sm:text-lg font-bold text-gray-900 leading-tight">Dashboard Siswa</h2>
+                    <p class="text-[10px] sm:text-xs text-gray-500 font-medium">SMP Diponegoro Sampang — MPLS 2026</p>
+                </div>
+            </div>
+
+            <!-- Header Quick Badge -->
+            <div class="flex items-center gap-3">
+                <span class="hidden md:inline-flex items-center gap-1.5 bg-brand-green/10 text-brand-green px-3 py-1 rounded-full text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-brand-green animate-ping"></span>
+                    Masa Orientasi Aktif
+                </span>
+                <div class="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-brand-green relative cursor-pointer" onclick="showNotificationInfo()">
+                    <i class="fa-solid fa-bell text-sm"></i>
+                    <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full"></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tab Views Container (Scrollable Workspace) -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
+
+            <!-- TAB 1: OVERVIEW DASHBOARD -->
+            <section id="tab-overview" class="dashboard-tab-content active space-y-6">
+                <!-- Welcome Banner with Dynamic Greeting -->
+                <div class="relative overflow-hidden bg-gradient-to-r from-brand-green to-emerald-800 text-white rounded-3xl p-6 sm:p-8 shadow-lg">
+                    <div class="absolute right-0 bottom-0 top-0 opacity-10 w-1/3 bg-[radial-gradient(circle_at_bottom_right,_var(--tw-gradient-stops))] from-white via-transparent to-transparent hidden sm:block"></div>
+                    <div class="max-w-2xl relative z-10 space-y-3">
+                        <span class="inline-block bg-brand-gold text-brand-dark px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Selamat Datang!</span>
+                        <h3 class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight" id="dynamic-greeting-text">Halo, Calon Pemimpin Masa Depan!</h3>
+                        <p class="text-xs sm:text-sm text-green-100 font-light leading-relaxed">
+                            Selamat datang di Dashboard MPLS 2026 SMP Diponegoro Sampang. Mari persiapkan dirimu untuk petualangan akademis terbaik di sini dengan berbudaya, berprestasi, dan berakhlakul karimah.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Live Quick Statistics Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Stat 1: Kepala Sekolah -->
+                    <div onclick="showHeadmasterModal()" class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between cursor-pointer hover:border-brand-green/40 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase">Kepala Sekolah</span>
+                            <div class="w-8 h-8 rounded-lg bg-green-50 text-brand-green flex items-center justify-center"><i class="fa-solid fa-user-tie"></i></div>
+                        </div>
+                        <div class="mt-4">
+                            <span id="overview-headmaster" class="text-sm sm:text-base font-bold text-brand-green block leading-tight">Ahmad Mutasir, S.Pd.</span>
+                            <span class="text-[10px] text-gray-400 block mt-1">Evaluasi & Sambutan <i class="fa-solid fa-chevron-right text-[8px] ml-1"></i></span>
+                        </div>
+                    </div>
+                    <!-- Stat 2: Panitia MPLS -->
+                    <div onclick="showTeachersModal()" class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between cursor-pointer hover:border-brand-green/40 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase">Panitia MPLS</span>
+                            <div class="w-8 h-8 rounded-lg bg-yellow-50 text-brand-gold flex items-center justify-center"><i class="fa-solid fa-users"></i></div>
+                        </div>
+                        <div class="mt-4">
+                            <span id="overview-teachers" class="text-sm sm:text-base font-bold text-brand-green block leading-tight">Unggah Berkas</span>
+                            <span class="text-[10px] text-gray-400 block mt-1">Kode Fleksibilitas <i class="fa-solid fa-chevron-right text-[8px] ml-1"></i></span>
+                        </div>
+                    </div>
+                    <!-- Stat 3: Survey Siswa -->
+                    <div onclick="showSurveyModal()" class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between cursor-pointer hover:border-brand-green/40 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase">Survey Siswa</span>
+                            <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-clipboard-question"></i></div>
+                        </div>
+                        <div class="mt-4">
+                            <span id="overview-survey-status" class="text-xl font-black text-brand-green font-fun">Survey</span>
+                            <span class="text-[10px] text-gray-400 block mt-1" id="overview-survey-desc">Isi Kuesioner Minat <i class="fa-solid fa-chevron-right text-[8px] ml-1"></i></span>
+                        </div>
+                    </div>
+                    <!-- Stat 4: Tes Siswa -->
+                    <div onclick="showTestModal()" class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between cursor-pointer hover:border-brand-green/40 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] sm:text-xs font-semibold text-gray-500 uppercase">Tes Siswa</span>
+                            <div class="w-8 h-8 rounded-lg bg-red-50 text-red-500 flex items-center justify-center"><i class="fa-solid fa-file-signature"></i></div>
+                        </div>
+                        <div class="mt-4">
+                            <span id="overview-test-status" class="text-xl font-black text-brand-green font-fun">Asesmen</span>
+                            <span class="text-[10px] text-gray-400 block mt-1" id="overview-test-desc">Uji Penjajakan Singkat <i class="fa-solid fa-chevron-right text-[8px] ml-1"></i></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sambutan Panitia MPLS (Full Width Layout) -->
+                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-4">
+                    <h4 class="text-base font-bold text-brand-green flex items-center gap-2"><i class="fa-solid fa-quote-left text-brand-gold"></i> Sambutan Panitia MPLS</h4>
+                    <p class="text-xs sm:text-sm text-gray-600 leading-relaxed font-light">
+                        "Selamat atas terpilihnya adik-adik menjadi bagian dari keluarga besar SMP Diponegoro Sampang. Kami berharap media digital interaktif ini membantu memudahkan kalian menyiapkan segala kebutuhan atribut, melengkapi twibbon, dan melakukan perkenalan awal secara seru & menyenangkan!"
+                    </p>
+                    <div class="flex items-center gap-3 pt-2">
+                        <div class="w-10 h-10 rounded-full bg-brand-green/20 flex items-center justify-center text-brand-green font-bold text-xs">PD</div>
+                        <div>
+                            <span class="block text-xs font-bold text-brand-dark">Panitia Pelaksana MPLS</span>
+                            <span class="block text-[10px] text-gray-400">SMP Diponegoro Sampang 2026</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: TWIBBON GENERATOR -->
+            <section id="tab-twibbon" class="dashboard-tab-content space-y-6">
+                <div class="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-6">
+                    <div class="border-b border-gray-100 pb-4">
+                        <h3 class="text-lg sm:text-xl font-bold text-brand-green">Twibbon Generator Resmi</h3>
+                        <p class="text-xs text-gray-500 mt-1">Unggah foto Anda, sesuaikan posisi, dan unduh kartu twibbon siap posting.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <!-- Controls Left -->
+                        <div class="lg:col-span-5 space-y-5">
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold text-gray-600 block">Pilih File Foto:</label>
+                                <input type="file" id="twibbon-file-input" accept="image/*" class="block w-full text-xs text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-brand-green file:text-white hover:file:bg-brand-lightgreen cursor-pointer transition-colors"/>
+                            </div>
+
+                            <!-- Scale Slider -->
+                            <div>
+                                <label class="flex justify-between text-xs font-bold text-gray-600 mb-1.5">
+                                    <span>Atur Skala Foto:</span>
+                                    <span id="scale-val" class="text-brand-green font-bold">100%</span>
+                                </label>
+                                <input type="range" id="twibbon-scale" min="20" max="250" value="100" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand-green">
+                            </div>
+
+                            <!-- X/Y Shift sliders -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-xs font-bold text-gray-600 mb-1 block">Geser Horizontal:</label>
+                                    <input type="range" id="twibbon-pos-x" min="-300" max="300" value="0" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand-green">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-gray-600 mb-1 block">Geser Vertikal:</label>
+                                    <input type="range" id="twibbon-pos-y" min="-300" max="300" value="0" class="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand-green">
+                                </div>
+                            </div>
+
+                            <!-- Frame Themes selection -->
+                            <div>
+                                <label class="text-xs font-bold text-gray-600 block mb-2">Pilih Desain Bingkai:</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <button onclick="changeTwibbonTheme('emerald')" id="theme-emerald" class="border-2 border-brand-green bg-green-50 text-brand-green px-3 py-2.5 rounded-xl text-xs font-bold transition-all">Emerald (Hijau Utama)</button>
+                                    <button onclick="changeTwibbonTheme('royal')" id="theme-royal" class="border border-gray-200 text-gray-600 hover:border-brand-gold px-3 py-2.5 rounded-xl text-xs font-bold transition-all">Royal (Emas Prestasi)</button>
+                                </div>
+                            </div>
+
+                            <button id="download-twibbon-btn" class="w-full bg-brand-green hover:bg-brand-lightgreen text-white py-3.5 rounded-xl font-bold shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
+                                <i class="fa-solid fa-download"></i> Unduh Hasil Twibbon
+                            </button>
+                        </div>
+
+                        <!-- Canvas Workspace Output Right -->
+                        <div class="lg:col-span-7 flex flex-col items-center justify-center">
+                            <div class="relative bg-white p-3 rounded-3xl shadow-xl border border-gray-100 max-w-sm w-full aspect-square overflow-hidden">
+                                <canvas id="twibbon-canvas" class="w-full h-full rounded-2xl bg-gray-50 cursor-move" width="800" height="800"></canvas>
+                                <div class="absolute bottom-5 left-1/2 -translate-x-1/2 bg-brand-dark/80 backdrop-blur-md text-white text-[10px] py-1.5 px-3 rounded-full flex items-center gap-1.5 pointer-events-none whitespace-nowrap">
+                                    <i class="fa-solid fa-arrows-up-down-left-right animate-pulse"></i>
+                                    <span>Geser / Seret foto langsung di kanvas</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: KUIS INTERAKTIF -->
+            <section id="tab-quiz" class="dashboard-tab-content space-y-6">
+                <div class="max-w-2xl mx-auto bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden relative">
+                    <!-- Start Box -->
+                    <div id="quiz-start-screen" class="p-8 text-center space-y-5">
+                        <div class="w-20 h-20 bg-brand-gold/10 rounded-full flex items-center justify-center mx-auto text-4xl animate-bounce">🏆</div>
+                        <div class="space-y-1.5">
+                            <h3 class="text-xl sm:text-2xl font-black text-brand-green font-fun tracking-wide">Kuis Kenal Sekolah</h3>
+                            <p class="text-xs text-gray-500">Uji pemahaman awalmu tentang SMP Diponegoro Sampang. Tersedia 4 pertanyaan menarik!</p>
+                        </div>
+                        <button onclick="startQuiz()" class="bg-brand-green hover:bg-brand-lightgreen text-white px-8 py-3.5 rounded-xl font-bold shadow-md transition-all inline-flex items-center gap-2 transform hover:-translate-y-0.5">
+                            <i class="fa-solid fa-play"></i> Mulai Main Kuis
+                        </button>
+                    </div>
+
+                    <!-- Active Question Box -->
+                    <div id="quiz-active-screen" class="hidden p-6 sm:p-8 space-y-6">
+                        <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+                            <span class="text-xs font-bold text-gray-500">Soal <span id="quiz-current-num">1</span> dari 4</span>
+                            <span class="text-xs font-bold text-brand-green bg-green-50 px-3 py-1 rounded-full">Skor: <span id="quiz-live-score">0</span></span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h4 id="quiz-question-text" class="text-sm sm:text-base font-bold text-gray-800">Pertanyaan...?</h4>
+                            <div class="grid grid-cols-1 gap-3" id="quiz-options-container">
+                                <!-- Populated dynamically by JS -->
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end pt-4 border-t border-gray-100">
+                            <button id="quiz-next-btn" disabled onclick="nextQuestion()" class="bg-gray-300 text-gray-500 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-not-allowed transition-all">Selanjutnya <i class="fa-solid fa-arrow-right ml-1"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- End Score Box -->
+                    <div id="quiz-end-screen" class="hidden p-8 text-center space-y-6">
+                        <div id="quiz-result-trophy" class="w-20 h-20 bg-yellow-50 rounded-full flex items-center justify-center mx-auto text-4xl">🎖️</div>
+                        <div class="space-y-2">
+                            <h3 class="text-xl sm:text-2xl font-black text-brand-green font-fun">Kuis Selesai!</h3>
+                            <div class="inline-block bg-brand-green text-white font-fun text-2xl sm:text-3xl px-8 py-2.5 rounded-2xl shadow-inner mt-2">
+                                Skor: <span id="quiz-final-score">0</span>
+                            </div>
+                            <p id="quiz-feedback-text" class="text-xs sm:text-sm font-semibold text-brand-gold mt-2"></p>
+                        </div>
+                        <button onclick="startQuiz()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all">Ulangi Kuis</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: DINDING HARAPAN (STICKY WALL) -->
+            <section id="tab-wall" class="dashboard-tab-content space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <!-- Left Input Form (5 cols) -->
+                    <div class="lg:col-span-5 bg-white p-6 sm:p-8 rounded-3xl border border-gray-200 shadow-sm space-y-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-brand-green">Tulis Harapan Anda</h3>
+                            <p class="text-xs text-gray-500">Pesan akan langsung dipajang secara langsung di papan virtual sebelah kanan.</p>
+                        </div>
+
+                        <form id="sticky-note-form" onsubmit="addStickyNote(event)" class="space-y-4">
+                            <div>
+                                <label class="text-xs font-bold text-gray-600 mb-1 block">Nama Lengkap:</label>
+                                <input type="text" id="sticky-author" required placeholder="Contoh: Muhammad Syafi'i" class="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-gray-600 mb-1 block">Asal Sekolah SD/MI:</label>
+                                <input type="text" id="sticky-origin" required placeholder="Contoh: MI Diponegoro Sampang" class="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-gray-600 mb-1 block">Pesan & Harapanmu:</label>
+                                <textarea id="sticky-text" required rows="3" placeholder="Contoh: Semoga bisa dapet teman baru yang seru dan rajin mengaji di SMP!" class="w-full bg-gray-50 border border-gray-200 px-4 py-2.5 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all resize-none"></textarea>
+                            </div>
+                            <!-- Color select picker -->
+                            <div>
+                                <label class="text-xs font-bold text-gray-600 mb-1.5 block">Warna Kertas Sticky Note:</label>
+                                <div class="flex gap-2">
+                                    <button type="button" onclick="selectStickyColor('yellow')" id="color-yellow" class="w-7 h-7 rounded-full bg-yellow-100 border-2 border-brand-green flex items-center justify-center text-xs text-brand-green"><i class="fa-solid fa-check"></i></button>
+                                    <button type="button" onclick="selectStickyColor('blue')" id="color-blue" class="w-7 h-7 rounded-full bg-blue-100 border-2 border-transparent hover:border-blue-200 w-7 h-7"></button>
+                                    <button type="button" onclick="selectStickyColor('pink')" id="color-pink" class="w-7 h-7 rounded-full bg-pink-100 border-2 border-transparent hover:border-pink-200 w-7 h-7"></button>
+                                    <button type="button" onclick="selectStickyColor('green')" id="color-green" class="w-7 h-7 rounded-full bg-emerald-100 border-2 border-transparent hover:border-emerald-200 w-7 h-7"></button>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="w-full bg-brand-green hover:bg-brand-lightgreen text-white py-3 rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-1.5 text-xs sm:text-sm">
+                                <i class="fa-solid fa-thumbtack"></i> Tempelkan di Papan
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Wooden Board Board (7 cols) -->
+                    <div class="lg:col-span-7 bg-amber-50/40 border border-amber-200 p-6 rounded-3xl min-h-[420px] relative shadow-inner">
+                        <div class="absolute top-0 inset-x-12 h-2 bg-yellow-800/25 rounded-b-lg"></div>
+                        <div id="sticky-board" class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                            <!-- Populated dynamically by JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Footer Info Inside Panel -->
+        <footer class="bg-white border-t border-gray-200 py-4 px-6 flex-shrink-0 text-center text-[10px] text-gray-400">
+            &copy; 2026 SMP Diponegoro Sampang. Desain Portal Orientasi Digital Mandiri.
+        </footer>
+    </main>
+
+    <!-- Modal: Kepala Sekolah -->
+    <div id="headmaster-modal" class="fixed inset-0 bg-black/60 z-50 hidden overflow-y-auto p-4 transition-all duration-300">
+        <div class="flex min-h-full items-center justify-center py-4">
+            <div class="modal-card bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100 transform scale-95 transition-transform duration-300">
+                <div class="bg-brand-green p-6 text-white text-center relative">
+                    <button onclick="closeHeadmasterModal()" class="absolute top-4 right-4 text-white/80 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+                    <div class="w-20 h-20 bg-brand-gold/20 rounded-full border-2 border-brand-gold flex items-center justify-center mx-auto text-3xl mb-3"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3 class="text-lg font-bold">Ahmad Mutasir, S.Pd.</h3>
+                    <p class="text-xs text-brand-lightgold font-medium">Kepala Sekolah SMP Diponegoro Sampang</p>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="bg-yellow-50/80 p-4 rounded-2xl border border-yellow-200 space-y-3 text-left">
+                        <span class="inline-flex items-center gap-1 bg-brand-gold/20 text-yellow-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                            <i class="fa-solid fa-shield-heart text-brand-gold"></i> MPLS RAMAH 2026
+                        </span>
+                        <h4 class="text-xs font-bold text-gray-800 leading-normal">Pengisian Kode Evaluasi Kepala Satuan Pendidikan MPLS RAMAH Tahun 2026</h4>
+                        <p class="text-[10px] text-gray-600 leading-normal">Gunakan kode di bawah ini saat diminta pada portal evaluasi kementerian:</p>
+                        
+                        <!-- Copy Code Area -->
+                        <div class="flex items-center justify-between bg-white border border-gray-200 p-2 rounded-xl">
+                            <span class="font-mono font-black text-sm text-brand-green tracking-wider pl-2" id="eval-code-text">KS-BZME9</span>
+                            <button onclick="copyEvaluationCode()" class="bg-brand-green hover:bg-brand-lightgreen text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                                <i class="fa-solid fa-copy"></i> Salin Kode
+                            </button>
+                        </div>
+                        
+                        <!-- Action Link Button -->
+                        <a href="https://karakter.data.kemendikdasmen.go.id/mpls/kode-unik" target="_blank" class="w-full bg-brand-green hover:bg-brand-lightgreen text-white py-2.5 rounded-xl text-xs font-bold transition-all text-center flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-square-arrow-up-right"></i> Buka Link Evaluasi <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                        </a>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-3 text-left">
+                        <h4 class="text-xs font-bold text-gray-800 mb-1"><i class="fa-solid fa-quote-left text-brand-gold mr-1"></i> Pesan Sambutan Ringkas</h4>
+                        <p class="text-[11px] text-gray-500 leading-relaxed font-light italic">
+                            "Mari bersinergi bersama untuk menyukseskan iklim pembelajaran yang aman, ramah anak, berprestasi, serta senantiasa memegang teguh ajaran Aswaja an-Nahdliyah."
+                        </p>
+                    </div>
+                    <button onclick="closeHeadmasterModal()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-600 py-2.5 rounded-xl text-xs font-bold transition-all">Kembali ke Dashboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Guru dan Tenaga Kependidikan -->
+    <div id="teachers-modal" class="fixed inset-0 bg-black/60 z-50 hidden overflow-y-auto p-4 transition-all duration-300">
+        <div class="flex min-h-full items-center justify-center py-4">
+            <div class="modal-card bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100 transform scale-95 transition-transform duration-300">
+                <div class="bg-brand-green p-6 text-white text-center relative">
+                    <button onclick="closeTeachersModal()" class="absolute top-4 right-4 text-white/80 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+                    <div class="w-20 h-20 bg-brand-gold/20 rounded-full border-2 border-brand-gold flex items-center justify-center mx-auto text-3xl mb-3"><i class="fa-solid fa-users"></i></div>
+                    <h3 class="text-lg font-bold">Panitia MPLS</h3>
+                    <p class="text-xs text-brand-lightgold font-medium">SMP Diponegoro Sampang</p>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="bg-yellow-50/80 p-4 rounded-2xl border border-yellow-200 space-y-3 text-left">
+                        <span class="inline-flex items-center gap-1 bg-brand-gold/20 text-yellow-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                            <i class="fa-solid fa-file-shield text-brand-gold"></i> UNGHAH BERKAS TES FLEKSIBILITAS
+                        </span>
+                        <h4 class="text-xs font-bold text-gray-800 leading-normal">Pengisian Kode Unggah Berkas Tes Fleksibilitas MPLS RAMAH Tahun 2026</h4>
+                        <p class="text-[10px] text-gray-600 leading-normal">Gunakan kode di bawah ini saat diminta pada portal referensi data kementerian:</p>
+                        
+                        <!-- Copy Code Area -->
+                        <div class="flex items-center justify-between bg-white border border-gray-200 p-2 rounded-xl">
+                            <span class="font-mono font-black text-sm text-brand-green tracking-wider pl-2" id="teacher-eval-code-text">GR-CX85A</span>
+                            <button onclick="copyTeacherCode()" class="bg-brand-green hover:bg-brand-lightgreen text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                                <i class="fa-solid fa-copy"></i> Salin Kode
+                            </button>
+                        </div>
+                        
+                        <!-- Action Link Button -->
+                        <a href="https://karakter.data.kemendikdasmen.go.id/mpls/kode-unik" target="_blank" class="w-full bg-brand-green hover:bg-brand-lightgreen text-white py-2.5 rounded-xl text-xs font-bold transition-all text-center flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-square-arrow-up-right"></i> Buka Link Pengisian <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                        </a>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-3 text-left">
+                        <h4 class="text-xs font-bold text-gray-800 mb-1"><i class="fa-solid fa-circle-info text-brand-green mr-1"></i> Informasi Pendidik</h4>
+                        <p class="text-[11px] text-gray-500 leading-relaxed font-light">
+                            Portal rujukan ini ditujukan bagi jajaran Pendidik dan Tenaga Kependidikan (PTK) guna mendukung optimalisasi program tes fleksibilitas MPLS Ramah di SMP Diponegoro Sampang.
+                        </p>
+                    </div>
+                    <button onclick="closeTeachersModal()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-600 py-2.5 rounded-xl text-xs font-bold transition-all">Kembali ke Dashboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Survey Siswa -->
+    <div id="survey-modal" class="fixed inset-0 bg-black/60 z-50 hidden overflow-y-auto p-4 transition-all duration-300">
+        <div class="flex min-h-full items-center justify-center py-4">
+            <div class="modal-card bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100 transform scale-95 transition-transform duration-300">
+                <div class="bg-brand-green p-6 text-white text-center relative">
+                    <button onclick="closeSurveyModal()" class="absolute top-4 right-4 text-white/80 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+                    <div class="w-20 h-20 bg-brand-gold/20 rounded-full border-2 border-brand-gold flex items-center justify-center mx-auto text-3xl mb-3"><i class="fa-solid fa-clipboard-question"></i></div>
+                    <h3 class="text-lg font-bold">Survey Siswa</h3>
+                    <p class="text-xs text-brand-lightgold font-medium">SMP Diponegoro Sampang</p>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div class="bg-yellow-50/80 p-4 rounded-2xl border border-yellow-200 space-y-3 text-left">
+                        <span class="inline-flex items-center gap-1 bg-brand-gold/20 text-yellow-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                            <i class="fa-solid fa-file-invoice text-brand-gold"></i> TES MPLS RAMAH
+                        </span>
+                        <h4 class="text-xs font-bold text-gray-800 leading-normal">Pengisian Kode Tes MPLS RAMAH Tahun 2026</h4>
+                        <p class="text-[10px] text-gray-600 leading-normal">Gunakan kode di bawah ini saat diminta pada portal evaluasi kementerian:</p>
+                        
+                        <!-- Copy Code Area -->
+                        <div class="flex items-center justify-between bg-white border border-gray-200 p-2 rounded-xl">
+                            <span class="font-mono font-black text-sm text-brand-green tracking-wider pl-2" id="survey-eval-code-text">MPLS-NAXXF</span>
+                            <button onclick="copySurveyCode()" class="bg-brand-green hover:bg-brand-lightgreen text-white text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                                <i class="fa-solid fa-copy"></i> Salin Kode
+                            </button>
+                        </div>
+                        
+                        <!-- Action Link Button -->
+                        <a href="https://karakter.data.kemendikdasmen.go.id/mpls/kode-unik" target="_blank" class="w-full bg-brand-green hover:bg-brand-lightgreen text-white py-2.5 rounded-xl text-xs font-bold transition-all text-center flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-square-arrow-up-right"></i> Buka Link Pengisian <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                        </a>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-3 text-left">
+                        <h4 class="text-xs font-bold text-gray-800 mb-1"><i class="fa-solid fa-circle-info text-brand-green mr-1"></i> Informasi Pengisian</h4>
+                        <p class="text-[11px] text-gray-500 leading-relaxed font-light">
+                            Silakan buka tautan kementerian di atas, salin kode khususnya, dan selesaikan pengisian. Jika sudah, Anda dapat menandai aktivitas ini sebagai selesai.
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="markSurveyAsAccessed()" class="bg-brand-green hover:bg-brand-lightgreen text-white py-2.5 rounded-xl text-xs font-bold transition-all">Sudah Mengisi</button>
+                        <button onclick="closeSurveyModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-600 py-2.5 rounded-xl text-xs font-bold transition-all">Batal</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Tes Diagnostik Siswa -->
+    <div id="test-modal" class="fixed inset-0 bg-black/60 z-50 hidden overflow-y-auto p-4 transition-all duration-300">
+        <div class="flex min-h-full items-center justify-center py-4">
+            <div class="modal-card bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100 transform scale-95 transition-transform duration-300">
+                <div class="bg-brand-green p-5 text-white flex items-center justify-between">
+                    <h3 class="text-sm sm:text-base font-bold"><i class="fa-solid fa-file-signature mr-2"></i> Uji Penjajakan Akademik</h3>
+                    <button onclick="closeTestModal()" class="text-white/80 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="p-6 space-y-4">
+                    <div id="test-content-ready">
+                        <p class="text-xs text-gray-500 mb-4 leading-relaxed">Uji pemahaman dasar akademik umum Anda sebelum memasuki gerbang kelas orientasi dengan menjawab formulir Google Form resmi yang disediakan.</p>
+                        <div class="grid grid-cols-1 gap-2">
+                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGhN2LPRnQMZWGoaRDjUslRZRwQYKK4Yuk2fVF02OfBb9c-A/viewform" target="_blank" onclick="markTestAsAccessed()" class="w-full bg-brand-green hover:bg-brand-lightgreen text-white py-3 rounded-xl text-xs font-bold transition-all text-center flex items-center justify-center gap-2 shadow-sm">
+                                <i class="fa-solid fa-square-arrow-up-right"></i> Mulai Tes (Isi Form) <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div id="test-content-done" class="hidden text-center py-4 space-y-3">
+                        <div class="text-4xl animate-bounce">🎉</div>
+                        <h4 class="text-base font-bold text-brand-green">Akses Tes Dikonfirmasi!</h4>
+                        <p class="text-xs text-gray-600">Terima kasih telah berpartisipasi. Hasil lembar jawaban Anda akan divalidasi langsung oleh tim panitia.</p>
+                        <div class="inline-block bg-brand-gold/10 text-brand-green font-bold text-xs px-4 py-1.5 rounded-full">
+                            Status: Selesai Mengikuti
+                        </div>
+                        <div class="flex gap-2 pt-2">
+                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfGhN2LPRnQMZWGoaRDjUslRZRwQYKK4Yuk2fVF02OfBb9c-A/viewform" target="_blank" class="w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-600 py-2 rounded-xl text-xs font-bold transition-all text-center">Buka Kembali Form</a>
+                            <button onclick="closeTestModal()" class="w-1/2 bg-brand-green hover:bg-brand-lightgreen text-white py-2 rounded-xl text-xs font-bold transition-all">Tutup Portal</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer Overlay (Default hidden) -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-black/60 z-40 hidden transition-opacity duration-300"></div>
+    <div id="mobile-menu-drawer" class="fixed top-0 bottom-0 left-0 w-64 bg-brand-dark text-white z-50 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+        <div class="p-5 border-b border-gray-800/80 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 bg-brand-green rounded-lg flex items-center justify-center text-white"><i class="fa-solid fa-graduation-cap"></i></div>
+                <span class="font-bold text-xs">PORTAL MPLS 2026</span>
+            </div>
+            <button id="mobile-menu-close-btn" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <button onclick="switchTab('overview')" id="mobile-nav-overview" class="mobile-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold bg-brand-green text-white">
+                <i class="fa-solid fa-chart-pie"></i><span>Dashboard Beranda</span>
+            </button>
+            <button onclick="switchTab('twibbon')" id="mobile-nav-twibbon" class="mobile-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white">
+                <i class="fa-solid fa-camera"></i><span>Twibbon Generator</span>
+            </button>
+            <button onclick="switchTab('quiz')" id="mobile-nav-quiz" class="mobile-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white">
+                <i class="fa-solid fa-gamepad"></i><span>Kuis "Kenal Sekolah"</span>
+            </button>
+            <button onclick="switchTab('wall')" id="mobile-nav-wall" class="mobile-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white">
+                <i class="fa-solid fa-thumbtack"></i><span>Dinding Harapan</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Core Application Logic Script -->
+    <script>
+        // Dynamic Greeting Controller based on local time
+        function updateDynamicGreeting() {
+            const hr = new Date().getHours();
+            let greet = "Selamat Pagi";
+            if (hr >= 11 && hr < 15) {
+                greet = "Selamat Siang";
+            } else if (hr >= 15 && hr < 18) {
+                greet = "Selamat Sore";
+            } else if (hr >= 18 || hr < 4) {
+                greet = "Selamat Malam";
+            }
+            const greetEl = document.getElementById('dynamic-greeting-text');
+            if (greetEl) {
+                greetEl.innerHTML = `${greet}, Calon Pemimpin Masa Depan!`;
+            }
+        }
+
+        // Hamburger Mobile control handling
+        const menuOpenBtn = document.getElementById('mobile-menu-open-btn');
+        const menuCloseBtn = document.getElementById('mobile-menu-close-btn');
+        const menuOverlay = document.getElementById('mobile-menu-overlay');
+        const menuDrawer = document.getElementById('mobile-menu-drawer');
+
+        menuOpenBtn.addEventListener('click', () => {
+            menuOverlay.classList.remove('hidden');
+            setTimeout(() => {
+                menuOverlay.classList.add('opacity-100');
+                menuDrawer.classList.remove('-translate-x-full');
+            }, 10);
+        });
+
+        const closeMobileMenu = () => {
+            menuOverlay.classList.remove('opacity-100');
+            menuDrawer.classList.add('-translate-x-full');
+            setTimeout(() => {
+                menuOverlay.classList.add('hidden');
+            }, 300);
+        };
+
+        menuCloseBtn.addEventListener('click', closeMobileMenu);
+        menuOverlay.addEventListener('click', closeMobileMenu);
+
+        // Tab switching controller
+        function switchTab(tabId) {
+            closeMobileMenu();
+
+            // Switch content visibilities
+            const contents = document.querySelectorAll('.dashboard-tab-content');
+            contents.forEach(c => {
+                c.classList.remove('active');
+                if(c.id === `tab-${tabId}`) {
+                    c.classList.add('active');
+                }
+            });
+
+            // Update Navigation Menu Active highlights (Desktop)
+            const desktopItems = document.querySelectorAll('.nav-item');
+            desktopItems.forEach(item => {
+                if(item.id === `nav-${tabId}`) {
+                    item.className = "nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all bg-brand-green text-white";
+                } else {
+                    item.className = "nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-gray-400 hover:text-white hover:bg-gray-800/50";
+                }
+            });
+
+            // Update Navigation Menu Active highlights (Mobile)
+            const mobileItems = document.querySelectorAll('.mobile-nav-item');
+            mobileItems.forEach(item => {
+                if(item.id === `mobile-nav-${tabId}`) {
+                    item.className = "mobile-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold bg-brand-green text-white";
+                } else {
+                    item.className = "mobile-nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-gray-800/30";
+                }
+            });
+
+            if (tabId === 'twibbon') {
+                setTimeout(drawCanvas, 100);
+            }
+        }
+
+        // Modal Handlers with deep scroll support & transition fix
+        function showHeadmasterModal() {
+            const m = document.getElementById('headmaster-modal');
+            m.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden'); // Lock background scroll
+            setTimeout(() => m.querySelector('.modal-card').classList.remove('scale-95'), 10);
+        }
+        function closeHeadmasterModal() {
+            const m = document.getElementById('headmaster-modal');
+            m.querySelector('.modal-card').classList.add('scale-95');
+            document.body.classList.remove('overflow-hidden');
+            setTimeout(() => m.classList.add('hidden'), 300);
+        }
+
+        function copyEvaluationCode() {
+            const codeText = 'KS-BZME9';
+            const tempInput = document.createElement('input');
+            tempInput.value = codeText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast(`Kode '${codeText}' berhasil disalin ke clipboard!`);
+        }
+
+        // Modal Handlers: Guru & Tendik (UNGHAH BERKAS MODAL CONTROL)
+        function showTeachersModal() {
+            const m = document.getElementById('teachers-modal');
+            m.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+            setTimeout(() => m.querySelector('.modal-card').classList.remove('scale-95'), 10);
+        }
+        function closeTeachersModal() {
+            const m = document.getElementById('teachers-modal');
+            m.querySelector('.modal-card').classList.add('scale-95');
+            document.body.classList.remove('overflow-hidden');
+            setTimeout(() => m.classList.add('hidden'), 300);
+        }
+
+        function copyTeacherCode() {
+            const codeText = 'GR-CX85A';
+            const tempInput = document.createElement('input');
+            tempInput.value = codeText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast(`Kode '${codeText}' berhasil disalin ke clipboard!`);
+        }
+
+        // Modal Handlers: Survey Siswa
+        function showSurveyModal() {
+            const m = document.getElementById('survey-modal');
+            m.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+            setTimeout(() => m.querySelector('.modal-card').classList.remove('scale-95'), 10);
+        }
+        function closeSurveyModal() {
+            const m = document.getElementById('survey-modal');
+            m.querySelector('.modal-card').classList.add('scale-95');
+            document.body.classList.remove('overflow-hidden');
+            setTimeout(() => m.classList.add('hidden'), 300);
+        }
+        function copySurveyCode() {
+            const codeText = 'MPLS-NAXXF';
+            const tempInput = document.createElement('input');
+            tempInput.value = codeText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast(`Kode '${codeText}' berhasil disalin ke clipboard!`);
+        }
+        function markSurveyAsAccessed() {
+            localStorage.setItem('survey_completed_mpls', 'true');
+            updateSurveyCard();
+            closeSurveyModal();
+            showToast("Terima kasih! Status survey Anda telah diperbarui menjadi Selesai.");
+        }
+        function updateSurveyCard() {
+            const isCompleted = localStorage.getItem('survey_completed_mpls');
+            if (isCompleted === 'true') {
+                const el = document.getElementById('overview-survey-status');
+                if (el) {
+                    el.innerText = "Selesai";
+                    el.className = "text-xl font-black text-emerald-600 font-fun";
+                }
+                const desc = document.getElementById('overview-survey-desc');
+                if (desc) {
+                    desc.innerHTML = `Terima Kasih! <i class="fa-solid fa-circle-check text-emerald-500 ml-1"></i>`;
+                }
+            }
+        }
+
+        // Modal Handlers: Tes Akademik Siswa
+        function showTestModal() {
+            const m = document.getElementById('test-modal');
+            m.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+            setTimeout(() => m.querySelector('.modal-card').classList.remove('scale-95'), 10);
+            
+            const testResult = localStorage.getItem('test_accessed_mpls');
+            if (testResult === 'true') {
+                document.getElementById('test-content-ready').classList.add('hidden');
+                document.getElementById('test-content-done').classList.remove('hidden');
+            } else {
+                document.getElementById('test-content-ready').classList.remove('hidden');
+                document.getElementById('test-content-done').classList.add('hidden');
+            }
+        }
+        function closeTestModal() {
+            const m = document.getElementById('test-modal');
+            m.querySelector('.modal-card').classList.add('scale-95');
+            document.body.classList.remove('overflow-hidden');
+            setTimeout(() => m.classList.add('hidden'), 300);
+        }
+        function markTestAsAccessed() {
+            localStorage.setItem('test_accessed_mpls', 'true');
+            updateTestCard();
+            setTimeout(() => {
+                document.getElementById('test-content-ready').classList.add('hidden');
+                document.getElementById('test-content-done').classList.remove('hidden');
+            }, 500);
+            showToast("Membuka Formulir Google Form...");
+        }
+        function updateTestCard() {
+            const accessed = localStorage.getItem('test_accessed_mpls');
+            if (accessed === 'true') {
+                const el = document.getElementById('overview-test-status');
+                if (el) {
+                    el.innerText = "Selesai";
+                    el.className = "text-xl font-black text-emerald-600 font-fun";
+                }
+                const desc = document.getElementById('overview-test-desc');
+                if (desc) {
+                    desc.innerHTML = `Selesai Mengikuti <i class="fa-solid fa-circle-check text-brand-green ml-1"></i>`;
+                }
+            }
+        }
+
+        // Canvas Twibbon Engine
+        const canvas = document.getElementById('twibbon-canvas');
+        const ctx = canvas.getContext('2d');
+        const fileInput = document.getElementById('twibbon-file-input');
+        const scaleRange = document.getElementById('twibbon-scale');
+        const posXRange = document.getElementById('twibbon-pos-x');
+        const posYRange = document.getElementById('twibbon-pos-y');
+        const downloadBtn = document.getElementById('download-twibbon-btn');
+
+        let userImage = null;
+        let activeTheme = 'emerald';
+        let isDragging = false;
+        let dragStartX = 0, dragStartY = 0;
+        let currentImgX = 0, currentImgY = 0;
+
+        function drawCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Render User Image first (if loaded)
+            if (userImage) {
+                const scale = scaleRange.value / 100;
+                const width = userImage.width * scale;
+                const height = userImage.height * scale;
+                const x = (canvas.width - width) / 2 + currentImgX;
+                const y = (canvas.height - height) / 2 + currentImgY;
+                ctx.drawImage(userImage, x, y, width, height);
+            } else {
+                ctx.fillStyle = '#f3f4f6';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#9ca3af';
+                ctx.font = '600 18px Poppins';
+                ctx.textAlign = 'center';
+                ctx.fillText('FOTO BELUM DIUNGGAH', canvas.width / 2, canvas.height / 2 - 10);
+                ctx.font = '12px Poppins';
+                ctx.fillText('Unggah foto terbaikmu di menu kontrol kiri', canvas.width / 2, canvas.height / 2 + 15);
+            }
+
+            drawOverlayFrame();
+        }
+
+        function drawOverlayFrame() {
+            const mainColor = activeTheme === 'emerald' ? '#0D5C3A' : '#A37F1A';
+            const accentColor = activeTheme === 'emerald' ? '#D4AF37' : '#F4E07B';
+            const subBg = activeTheme === 'emerald' ? 'rgba(13, 92, 58, 0.94)' : 'rgba(17, 24, 39, 0.96)';
+
+            // Inner styling framework
+            ctx.strokeStyle = mainColor;
+            ctx.lineWidth = 20;
+            ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+
+            ctx.strokeStyle = accentColor;
+            ctx.lineWidth = 4;
+            ctx.strokeRect(22, 22, canvas.width - 44, canvas.height - 44);
+
+            // Header Banner
+            ctx.fillStyle = mainColor;
+            ctx.beginPath();
+            ctx.moveTo(120, 24);
+            ctx.lineTo(680, 24);
+            ctx.lineTo(640, 80);
+            ctx.lineTo(160, 80);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.strokeStyle = accentColor;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 20px Poppins';
+            ctx.textAlign = 'center';
+            ctx.fillText('SAYA SIAP SUKSESKAN MPLS 2026', canvas.width / 2, 60);
+
+            // Footer Badge
+            ctx.fillStyle = subBg;
+            ctx.beginPath();
+            ctx.roundRect(50, canvas.height - 170, canvas.width - 100, 120, 20);
+            ctx.fill();
+
+            ctx.strokeStyle = accentColor;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Footer texts
+            ctx.fillStyle = accentColor;
+            ctx.font = 'bold 30px Poppins';
+            ctx.fillText('SMP DIPONEGORO SAMPANG', canvas.width / 2, canvas.height - 125);
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = '500 15px Poppins';
+            ctx.fillText('Religius, Berprestasi, dan Berakhlakul Karimah', canvas.width / 2, canvas.height - 95);
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 11px Poppins';
+            ctx.fillText('• BERMUTU • BERBUDAYA • ASWAJA •', canvas.width / 2, canvas.height - 72);
+        }
+
+        fileInput.addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    userImage = img;
+                    currentImgX = 0; currentImgY = 0;
+                    posXRange.value = 0; posYRange.value = 0;
+                    scaleRange.value = 100;
+                    drawCanvas();
+                    showToast("Foto berhasil dimuat! Seret foto untuk memposisikan.");
+                };
+                img.src = event.target.result;
+            };
+            if (e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
+        });
+
+        scaleRange.addEventListener('input', function() {
+            document.getElementById('scale-val').innerText = `${this.value}%`;
+            drawCanvas();
+        });
+        posXRange.addEventListener('input', function() { currentImgX = parseInt(this.value); drawCanvas(); });
+        posYRange.addEventListener('input', function() { currentImgY = parseInt(this.value); drawCanvas(); });
+
+        function changeTwibbonTheme(theme) {
+            activeTheme = theme;
+            const btnEmerald = document.getElementById('theme-emerald');
+            const btnRoyal = document.getElementById('theme-royal');
+            if (theme === 'emerald') {
+                btnEmerald.className = "border-2 border-brand-green bg-green-50 text-brand-green px-3 py-2.5 rounded-xl text-xs font-bold transition-all";
+                btnRoyal.className = "border border-gray-200 text-gray-600 hover:border-brand-gold px-3 py-2.5 rounded-xl text-xs font-bold transition-all";
+            } else {
+                btnEmerald.className = "border border-gray-200 text-gray-600 hover:border-brand-green px-3 py-2.5 rounded-xl text-xs font-bold transition-all";
+                btnRoyal.className = "border-2 border-brand-gold bg-yellow-50 text-brand-gold px-3 py-2.5 rounded-xl text-xs font-bold transition-all";
+            }
+            drawCanvas();
+        }
+
+        // Drag and touch event listeners for flexible controls on Twibbon Canvas
+        canvas.addEventListener('mousedown', startDrag);
+        canvas.addEventListener('touchstart', startDrag, { passive: true });
+        window.addEventListener('mouseup', endDrag);
+        window.addEventListener('touchend', endDrag);
+        canvas.addEventListener('mousemove', dragMove);
+        canvas.addEventListener('touchmove', dragMove, { passive: false });
+
+        function startDrag(e) {
+            if (!userImage) return;
+            isDragging = true;
+            const pos = getEventPos(e);
+            dragStartX = pos.x - currentImgX;
+            dragStartY = pos.y - currentImgY;
+        }
+        function endDrag() { isDragging = false; }
+        function dragMove(e) {
+            if (!isDragging || !userImage) return;
+            if (e.cancelable) e.preventDefault();
+            const pos = getEventPos(e);
+            currentImgX = pos.x - dragStartX;
+            currentImgY = pos.y - dragStartY;
+            posXRange.value = currentImgX;
+            posYRange.value = currentImgY;
+            drawCanvas();
+        }
+        function getEventPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: (clientX - rect.left) * (canvas.width / rect.width),
+                y: (clientY - rect.top) * (canvas.height / rect.height)
+            };
+        }
+
+        downloadBtn.addEventListener('click', function() {
+            if (!userImage) {
+                showToast("Unggah foto terbaikmu terlebih dahulu!");
+                return;
+            }
+            const dataUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = `Twibbon_MPLS2026_${Date.now()}.png`;
+            link.href = dataUrl;
+            link.click();
+            showToast("Pengunduhan Twibbon berhasil dimulai!");
+        });
+
+        // Interactive Quiz Engine
+        const quizQuestions = [
+            {
+                q: "Apa visi utama dari pembentukan karakter di SMP Diponegoro Sampang?",
+                o: ["Religius Aswaja, Berprestasi, dan Berakhlakul Karimah", "Modern, Agresif, dan Unggul", "Pintar, Mandiri, dan Patriotik"],
+                correct: 0
+            },
+            {
+                q: "Kapan masa pengenalan lingkungan sekolah (MPLS) 2026 akan resmi dimulai?",
+                o: ["September 2026", "Juli 2026", "Desember 2026"],
+                correct: 1
+            },
+            {
+                q: "Berikut ini barang atribut yang wajib dibawa saat hari pertama orientasi adalah...",
+                o: ["ID Card / Nametag Karton Hijau", "Handphone Layar Lipat Baru", "Sepeda Baru"],
+                correct: 0
+            },
+            {
+                q: "SMP Diponegoro Sampang menerapkan budaya luhur dengan mengedepankan prinsip...",
+                o: ["5S (Senyum, Sapa, Salam, Sopan, Santun)", "3M (Melihat, Membaca, Mendengar)", "2S (Sabar dan Setia)"],
+                correct: 0
+            }
+        ];
+
+        let quizCurrentIndex = 0;
+        let quizScore = 0;
+        let selectedOptionIndex = null;
+
+        function startQuiz() {
+            quizCurrentIndex = 0;
+            quizScore = 0;
+            selectedOptionIndex = null;
+            document.getElementById('quiz-start-screen').classList.add('hidden');
+            document.getElementById('quiz-end-screen').classList.add('hidden');
+            document.getElementById('quiz-active-screen').classList.remove('hidden');
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            selectedOptionIndex = null;
+            const currentQ = quizQuestions[quizCurrentIndex];
+            document.getElementById('quiz-current-num').innerText = quizCurrentIndex + 1;
+            document.getElementById('quiz-live-score').innerText = quizScore;
+            document.getElementById('quiz-question-text').innerText = currentQ.q;
+
+            const optionsContainer = document.getElementById('quiz-options-container');
+            optionsContainer.innerHTML = '';
+
+            currentQ.o.forEach((opt, idx) => {
+                const optButton = document.createElement('button');
+                optButton.className = "quiz-option text-left p-3.5 rounded-xl border border-gray-200 hover:border-brand-green/30 hover:bg-green-50/20 text-xs sm:text-sm font-semibold text-gray-700 transition-all flex items-center justify-between";
+                optButton.innerHTML = `
+                    <span>${opt}</span>
+                    <span class="w-4.5 h-4.5 rounded-full border border-gray-300 flex items-center justify-center text-[10px] text-transparent"><i class="fa-solid fa-circle"></i></span>
+                `;
+                optButton.onclick = () => selectQuizOption(idx, optButton);
+                optionsContainer.appendChild(optButton);
+            });
+
+            const nextBtn = document.getElementById('quiz-next-btn');
+            nextBtn.disabled = true;
+            nextBtn.className = "bg-gray-200 text-gray-400 px-5 py-2.5 rounded-xl text-xs font-bold cursor-not-allowed transition-all";
+        }
+
+        function selectQuizOption(idx, buttonElement) {
+            if (selectedOptionIndex !== null) return;
+            selectedOptionIndex = idx;
+            const currentQ = quizQuestions[quizCurrentIndex];
+            const allOptions = document.querySelectorAll('.quiz-option');
+
+            if (idx === currentQ.correct) {
+                buttonElement.className = "quiz-option text-left p-3.5 rounded-xl border border-green-500 bg-green-50 text-green-700 text-xs sm:text-sm font-bold transition-all flex items-center justify-between";
+                buttonElement.querySelector('span:last-child').className = "w-4.5 h-4.5 rounded-full bg-green-500 text-white flex items-center justify-center text-[10px]";
+                quizScore += 25;
+                document.getElementById('quiz-live-score').innerText = quizScore;
+            } else {
+                buttonElement.className = "quiz-option text-left p-3.5 rounded-xl border border-red-500 bg-red-50 text-red-700 text-xs sm:text-sm font-bold transition-all flex items-center justify-between";
+                buttonElement.querySelector('span:last-child').className = "w-4.5 h-4.5 rounded-full bg-red-500 text-white flex items-center justify-center text-[10px]";
+                buttonElement.querySelector('span:last-child').innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+
+                const correctButton = allOptions[currentQ.correct];
+                correctButton.className = "quiz-option text-left p-3.5 rounded-xl border border-green-500 bg-green-50 text-green-700 text-xs sm:text-sm font-bold transition-all flex items-center justify-between";
+                correctButton.querySelector('span:last-child').className = "w-4.5 h-4.5 rounded-full bg-green-500 text-white flex items-center justify-center text-[10px]";
+            }
+
+            const nextBtn = document.getElementById('quiz-next-btn');
+            nextBtn.disabled = false;
+            nextBtn.className = "bg-brand-green hover:bg-brand-lightgreen text-white px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer transition-all";
+        }
+
+        function nextQuestion() {
+            quizCurrentIndex++;
+            if (quizCurrentIndex < quizQuestions.length) {
+                renderQuizQuestion();
+            } else {
+                showQuizResults();
+            }
+        }
+
+        function showQuizResults() {
+            document.getElementById('quiz-active-screen').classList.add('hidden');
+            document.getElementById('quiz-end-screen').classList.remove('hidden');
+            document.getElementById('quiz-final-score').innerText = quizScore;
+
+            const trophy = document.getElementById('quiz-result-trophy');
+            const feedback = document.getElementById('quiz-feedback-text');
+
+            if (quizScore === 100) {
+                trophy.innerText = "👑";
+                feedback.innerText = "Sempurna! Kamu memahami calon sekolah barumu dengan sangat luar biasa!";
+            } else if (quizScore >= 75) {
+                trophy.innerText = "🎖️";
+                feedback.innerText = "Sangat Bagus! Sedikit lagi kamu akan jadi siswa teladan.";
+            } else {
+                trophy.innerText = "⭐";
+                feedback.innerText = "Bagus! Terus belajar dan mengenali tata tertib sekolah ya.";
+            }
+        }
+
+        // Sticky Notes Board Controller
+        let activeStickyColor = 'yellow';
+        const colorConfigs = {
+            yellow: { bg: 'bg-yellow-100', text: 'text-yellow-950', border: 'border-yellow-200' },
+            blue: { bg: 'bg-blue-100', text: 'text-blue-950', border: 'border-blue-200' },
+            pink: { bg: 'bg-pink-100', text: 'text-pink-950', border: 'border-pink-200' },
+            green: { bg: 'bg-emerald-100', text: 'text-emerald-950', border: 'border-emerald-200' }
+        };
+
+        function selectStickyColor(color) {
+            activeStickyColor = color;
+            ['yellow', 'blue', 'pink', 'green'].forEach(c => {
+                const btn = document.getElementById(`color-${c}`);
+                if (c === color) {
+                    btn.className = btn.className.replace('border-transparent', 'border-brand-green');
+                    btn.innerHTML = `<i class="fa-solid fa-check"></i>`;
+                } else {
+                    btn.className = btn.className.replace('border-brand-green', 'border-transparent');
+                    btn.innerHTML = '';
+                }
+            });
+        }
+
+        function addStickyNote(event) {
+            event.preventDefault();
+            const authorInput = document.getElementById('sticky-author');
+            const originInput = document.getElementById('sticky-origin');
+            const textInput = document.getElementById('sticky-text');
+
+            const newNote = {
+                id: Date.now(),
+                author: authorInput.value,
+                origin: originInput.value,
+                text: textInput.value,
+                color: activeStickyColor,
+                rotation: Math.floor(Math.random() * 6) - 3
+            };
+
+            let notes = JSON.parse(localStorage.getItem('mpls_notes_dashboard') || '[]');
+            notes.unshift(newNote);
+            localStorage.setItem('mpls_notes_dashboard', JSON.stringify(notes));
+
+            authorInput.value = '';
+            originInput.value = '';
+            textInput.value = '';
+
+            loadStickyNotes();
+            showToast("Harapan kamu berhasil ditempelkan di papan!");
+        }
+
+        function loadStickyNotes() {
+            const board = document.getElementById('sticky-board');
+            let notes = JSON.parse(localStorage.getItem('mpls_notes_dashboard') || '[]');
+
+            if (notes.length === 0) {
+                notes = [
+                    {
+                        id: 1,
+                        author: "Fatimah Azzahra",
+                        origin: "MI Diponegoro",
+                        text: "Semoga saya bisa dapet temen baru yang asik diajak belajar ngaji dan bermain sains!",
+                        color: "yellow",
+                        rotation: -2
+                    },
+                    {
+                        id: 2,
+                        author: "Budi Satriyo",
+                        origin: "SDN 1 Sampang",
+                        text: "Pengen buru-buru gabung ekskul Pramuka dan memenangkan olahraga!",
+                        color: "blue",
+                        rotation: 3
+                    }
+                ];
+                localStorage.setItem('mpls_notes_dashboard', JSON.stringify(notes));
+            }
+
+            board.innerHTML = '';
+
+            notes.forEach(note => {
+                const cfg = colorConfigs[note.color] || colorConfigs.yellow;
+                const noteCard = document.createElement('div');
+                noteCard.className = `p-4 rounded-2xl shadow border ${cfg.bg} ${cfg.border} ${cfg.text} hover:scale-105 hover:shadow-md transition-all relative overflow-hidden`;
+                noteCard.style.transform = `rotate(${note.rotation}deg)`;
+                noteCard.innerHTML = `
+                    <div class="absolute top-1 right-2 opacity-35 text-base">📌</div>
+                    <p class="text-xs italic font-medium leading-relaxed">"${note.text}"</p>
+                    <div class="mt-3.5 pt-2.5 border-t border-black/10 flex flex-col text-[10px]">
+                        <span class="font-extrabold uppercase">${note.author}</span>
+                        <span class="opacity-75">SD/MI: ${note.origin}</span>
+                    </div>
+                `;
+                board.appendChild(noteCard);
+            });
+        }
+
+        // Dynamic Toast Notification alternative to alert()
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-5 right-5 z-50 bg-brand-dark/95 backdrop-blur text-white px-5 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-xs font-semibold transition-all duration-300 translate-y-8 opacity-0 border border-gray-800";
+            toast.innerHTML = `
+                <i class="fa-solid fa-circle-check text-brand-gold"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-8', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-8', 'opacity-0');
+                setTimeout(() => toast.remove(), 400);
+            }, 2800);
+        }
+
+        function showNotificationInfo() {
+            showToast("Belum ada pengumuman mendesak baru hari ini.");
+        }
+
+        // Window Load Event Lifecycle
+        window.onload = function() {
+            updateDynamicGreeting();
+            drawCanvas();
+            loadStickyNotes();
+            updateSurveyCard();
+            updateTestCard();
+        };
+    </script>
+</body>
+</html>
